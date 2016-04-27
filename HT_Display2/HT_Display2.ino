@@ -1,8 +1,7 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include "DHT.h"
-DHT dht0(A0, DHT11);
-DHT dht1(3, DHT11);
+DHT dht0(4, DHT11);
 char b[17];
 int f;
 long int t;
@@ -21,13 +20,17 @@ void PrintLcd(int x, int y, char * str) {
     lcd.print((char)str[i]);
   }
 }
+
 void setup() {
   lcd.init();                      // initialize the lcd
   // Print a message to the LCD.
   lcd.backlight();
   //Serial.begin(9600);
   dht0.begin();
-  dht1.begin();
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
+  digitalWrite(2,LOW);
+  digitalWrite(3,HIGH);
   pinMode(13, OUTPUT);
 }
 void loop() {
@@ -36,30 +39,18 @@ void loop() {
   sprintf(b, "H0 %02d%%", f);
   PrintLcd(0, 1, b);
   
-  f = (int)dht1.readHumidity();
-  sprintf(b, "H1 %02d%%", f);
-  PrintLcd(8, 1, b);
-
   f = (int)dht0.readTemperature();
   sprintf(b, "T0 %02d*C", f);
   PrintLcd(0, 0, b);
 
-  f = (int)dht1.readTemperature();
-  sprintf(b, "T1 %02d*C", f);
-  PrintLcd(8, 0, b);
-  
-  digitalWrite(13, HIGH);
-  delay(200);
-  digitalWrite(13, LOW);
-  delay(200);
   if (p == 0 ) {
-    PrintLcd(7,0,"|");
+    PrintLcd(7,0," ");
     p = 1;
   } else {
-    PrintLcd(7,0,"-");
+    PrintLcd(7,0,":");
     p = 0;    
   }
   
-  //Serial.println(millis()-t);
+  delay(200);
   
 }
