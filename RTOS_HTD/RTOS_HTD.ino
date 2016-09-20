@@ -24,28 +24,27 @@ void PrintLcd(int x, int y, char * str) {
 // Declare a semaphore handle.
 //SemaphoreHandle_t sem;
 QueueHandle_t dhtTemp, dhtHumd;
+char d = ':';
 //------------------------------------------------------------------------------
 /*
    Thread 1, turn the LED off when signalled by thread 2.
 */
 // Declare the thread function for thread 1.
 void DHTsensor(void* arg) {
+  //*
   dht.begin();
-  pinMode(2,OUTPUT);
-  pinMode(3,OUTPUT);
-  digitalWrite(2,LOW);
-  digitalWrite(3,HIGH);
-  int Temp = 2, Humd = 2;
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  digitalWrite(2, LOW);
+  digitalWrite(3, HIGH);
+  int Temp = (int)22, Humd = (int)50;//*/
   while (1) {
     xQueueReset(dhtTemp);
     xQueueReset(dhtHumd);
-    Temp = (int)dht.readTemperature();
-    Serial.println(Temp);
-    Humd = (int)dht.readHumidity();
-    Serial.println(Humd);
     xQueueSend(dhtTemp, &Temp, (TickType_t)1);
     xQueueSend(dhtHumd, &Humd, (TickType_t)1);
-    vTaskDelay((500L * configTICK_RATE_HZ) / 1000L);
+    //Temp++;
+    vTaskDelay((2000L * configTICK_RATE_HZ) / 1000L);
   }
 }
 //------------------------------------------------------------------------------
@@ -56,19 +55,22 @@ void DHTsensor(void* arg) {
 void LCDisplay(void* arg) {
   char b[17];
   int Temp = 1, Humd = 1;
-  int Humq = 3;
   lcd.init();                      // initialize the lcd
   // Print a message to the LCD.
-  lcd.backlight();
+  //lcd.backlight();
   while (1) {
     xQueuePeek(dhtTemp, &Temp, 0);
-    if (dhtHumd != 0 ) {
-      xQueueReceive(dhtHumd, &Humq, 1);
-      Humd = Humq;
-    }
-    sprintf(b, "T %02d*C H %02d%%", Temp, Humd);
+    xQueuePeek(dhtHumd, &Humd, 0);
+    /*if (d == ' ') {
+      d = ':';
+    } else {
+      d = ' ';
+    }*/
+    sprintf(b, "%02d* %02d%%", Temp, Humd);
     PrintLcd(0, 0, b);
-    Serial.println(2);
+    //Serial.println(b);
+    //Serial.println(d);
+    Serial.println(5);
     vTaskDelay((200L * configTICK_RATE_HZ) / 1000L);
   }
 }
@@ -76,21 +78,23 @@ void LCDisplay(void* arg) {
 void setup() {
   portBASE_TYPE s1, s2;
   Serial.begin(9600);
+  Serial.println(configTICK_RATE_HZ);
   dhtTemp = xQueueCreate( 1, sizeof( int ));
   dhtHumd = xQueueCreate( 1, sizeof( int ));
-  Serial.println(1);
+  //Serial.println(configMINIMAL_STACK_SIZE);
   // create task at priority two
-  s1 = xTaskCreate(DHTsensor, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+  s1 = xTaskCreate(DHTsensor, NULL, configMINIMAL_STACK_SIZE*25, NULL, 1, NULL);
   // create task at priority one
-  s2 = xTaskCreate(LCDisplay, NULL, configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+  s2 = xTaskCreate(LCDisplay, NULL, configMINIMAL_STACK_SIZE*25, NULL, 2, NULL);
+
   // check for creation errors
   if ( s1 != pdPASS || s2 != pdPASS ) {
-    Serial.println(F("Creation problem"));
+    Serial.println(9);
     while (1);
   }
   // start scheduler
   vTaskStartScheduler();
-  Serial.println(F("Insufficient RAM"));
+  Serial.println(8);
   while (1);
 }
 //------------------------------------------------------------------------------
