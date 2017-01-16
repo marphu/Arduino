@@ -1,8 +1,10 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include "DHT.h"
-DHT dht0(A0, DHT11);
-DHT dht1(3, DHT11);
+int dhtPin1 = 11;
+int dhtPin0 = 4;
+DHT dht0(dhtPin0, DHT11);
+DHT dht1(dhtPin1, DHT11);
 char b[17];
 int f;
 long int t;
@@ -29,6 +31,14 @@ void setup() {
   dht0.begin();
   dht1.begin();
   pinMode(13, OUTPUT);
+  pinMode(dhtPin0 - 1, OUTPUT);
+  pinMode(dhtPin0 - 2, OUTPUT);
+  digitalWrite(dhtPin0 - 1, HIGH);
+  digitalWrite(dhtPin0 - 2, LOW);
+  pinMode(dhtPin1 - 1, OUTPUT);
+  pinMode(dhtPin1 - 2, OUTPUT);
+  digitalWrite(dhtPin1 - 1, HIGH);
+  digitalWrite(dhtPin1 - 2, LOW);
 }
 void loop() {
   t=millis();
