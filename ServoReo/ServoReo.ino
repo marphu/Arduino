@@ -1,5 +1,5 @@
 int ledPin = 11;      // LED connected to digital pin 9
-int aPx = A3;   // potentiometer connected to analog pin 3
+int aPx = A1;   // potentiometer connected to analog pin 3
 int aPy = A0;   // potentiometer connected to analog pin 3
 int val = 0;         // variable to store the read value
 #include <Servo.h>
@@ -12,8 +12,8 @@ void setup(){
 }
 
 void loop(){
-  Serial.print(analogRead(aPy));
+  Serial.print((analogRead(aPy))/1);
   Serial.print(" ");
-  Serial.println(analogRead(aPx));
- 
+  Serial.println((analogRead(aPx))/1);
+  delay(20);
 }
