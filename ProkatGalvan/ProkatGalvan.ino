@@ -70,6 +70,7 @@ void loop() {
       Serial.println("Go!");
       RUN = !RUN;
     }
+    BO[4] = BR[4];
   }
   if(BR[0] != BO[0]) {
     if (BR[0]) {
@@ -77,6 +78,7 @@ void loop() {
       RUN = false;
       UP = true;
     }
+    BO[0] = BR[0];
   }
   if(BR[TYPE] != BO[TYPE]) {
     if (BR[TYPE]) {
@@ -84,10 +86,11 @@ void loop() {
       RUN = false;
       UP = false;
     }
+    BO[TYPE] = BR[TYPE];
   }
-  for( i = 0; i < 5 ; i++ ){
+ /* for( i = 0; i < 5 ; i++ ){
     BO[i] = BR[i];
     //Serial.print(BR[i]);
   }
-  delay(100);
+  delay(100);*/
 }
