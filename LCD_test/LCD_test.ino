@@ -71,7 +71,7 @@ void PrintLcd(int x, int y, char * str) {
 void setup() {
   lcd.init();                      // initialize the lcd
   // Print a message to the LCD.
-  //lcd.backlight();
+  lcd.backlight();
   //Serial.begin(9600);
   dht.begin();
   // Запуск часов

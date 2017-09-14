@@ -1,7 +1,7 @@
 // Тестировалось на Arduino IDE 1.0.5
-int IN1 = 2; // Input1 подключен к выводу 5
+int IN1 = 6; // Input1 подключен к выводу 5
 int IN2 = 7;
-int ENB = 6;
+int ENB = 2;
 int LIM[] = {8, 4, 5, 6, 12};
 bool BR[5], BO[5];
 bool RUN, UP;
